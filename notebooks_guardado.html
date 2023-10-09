@@ -64,7 +64,6 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks_guardado';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Parcial Final ML" href="intro.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -155,8 +154,8 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Parcial Final ML</a></li>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="notebooks_guardado_3.html">Parcial Final ML</a></li>
 
 
 
@@ -368,7 +367,10 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#eda-fraude-con-datos-reducidos">EDA FRAUDE CON DATOS REDUCIDOS</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wind-speed">Wind Speed</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wind-speed">Wind Speed</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-bivariado">Analisis bivariado</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#modelo-de-clasificacion">Modelo de Clasificacion</a><ul class="visible nav section-nav flex-column">
@@ -454,6 +456,44 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_transaction</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;train_transaction_new.csv&#39;</span><span class="p">)</span>
 <span class="n">data_identity</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;train_identity_new.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="c1"># Sample DataFrame with a &#39;category_column&#39;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;category_column&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]}</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># Convert the &#39;category_column&#39; to categorical data type (optional but recommended)</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;category_column&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;category_column&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
+
+<span class="c1"># Integer encode the categorical column</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;integer_encoded&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;category_column&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">codes</span>
+
+<span class="c1"># One-hot encode the integer-encoded column using TensorFlow</span>
+<span class="n">encoded</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_categorical</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;integer_encoded&#39;</span><span class="p">])</span>
+
+<span class="c1"># Add the one-hot encoded vectors as new columns in the DataFrame</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">encoded</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;encoded_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">encoded</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+
+<span class="c1"># Display the updated DataFrame</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  category_column  integer_encoded  encoded_0  encoded_1  encoded_2
+0               A                0        1.0        0.0        0.0
+1               B                1        0.0        1.0        0.0
+2               C                2        0.0        0.0        1.0
+3               A                0        1.0        0.0        0.0
+4               C                2        0.0        0.0        1.0
 </pre></div>
 </div>
 </div>
@@ -1034,7 +1074,7 @@ Length: 434, dtype: int64
 </div>
 </div>
 <ul class="simple">
-<li><p>Eliminación de Columnas con mas del 50% de datos faltantes</p></li>
+<li><p>Eliminación de Columnas con mas del 50% de datos faltantes, por motivos computacionales y por que no seria adecuado imputar datos a columnas que tienen mas del 50% de datos faltantes, no seria una muestra representativa para encontrar la mediana y moda.</p></li>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1489,7 +1529,7 @@ Decreased by 77.4%
 <section id="reduccion-de-dimensionalidad">
 <h4>Reduccion de dimensionalidad<a class="headerlink" href="#reduccion-de-dimensionalidad" title="Permalink to this heading">#</a></h4>
 <ul class="simple">
-<li><p>Se aplica la funcion VIF</p></li>
+<li><p>Se almacena la variable a predecir y las variables por separado para realizar el VIF.</p></li>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1532,6 +1572,12 @@ Decreased by 77.4%
 </div>
 </div>
 </div>
+<ul class="simple">
+<li><p>Se aplica la funcion VIF</p></li>
+</ul>
+<ul class="simple">
+<li><p>Se eliminará los 5 VIF mas altos para cada ciclo del proceso y que sean a su vez mayor que 5, esto con el proposito de reducir el tiempo de computo.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -1745,7 +1791,7 @@ dtype: object
 </div>
 </div>
 <ul class="simple">
-<li><p>Al concluir el proceso de comprobación de multicolinealidad, observamos que solo un reducido número de columnas permanecen en el conjunto de datos.</p></li>
+<li><p>Al concluir el proceso de comprobación de multicolinealidad, observamos que solo un reducido número de columnas; 84 en este caso permanecen en el conjunto de datos.</p></li>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1849,6 +1895,9 @@ memory usage: 64.1 MB
 </div>
 </div>
 </div>
+<ul class="simple">
+<li><p>Aqui podemos observar la matriz de correlación reducida y efectivamente observamos que las variables no tienen correlación entre ellas, y el grafico es en su mayoria azul.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calcula la matriz de correlación</span>
@@ -1873,6 +1922,32 @@ memory usage: 64.1 MB
 </section>
 <section id="eda-fraude-con-datos-reducidos">
 <h2>EDA FRAUDE CON DATOS REDUCIDOS<a class="headerlink" href="#eda-fraude-con-datos-reducidos" title="Permalink to this heading">#</a></h2>
+<p>Detección de fraude
+Los datos proceden de transacciones reales de comercio electrónico de Vesta y contienen una amplia gama
+de características, desde el tipo de dispositivo hasta las características del producto. El objetivo principal es
+mejorar la eficacia de las alertas de transacciones fraudulentas para millones de personas en todo el mundo,
+ayudando a cientos de miles de empresas a reducir sus pérdidas por fraude y aumentar sus ingresos. Y, por
+supuesto, ahorrará a muchas personas la molestia de los falsos positivos.</p>
+<ul class="simple">
+<li><p>TransactionDT : Intervalo de tiempo a partir de una fecha y hora de referencia</p></li>
+<li><p>TransactionAMT : Importe del pago de la transacción en USD</p></li>
+<li><p>ProductCD: Código de producto, el producto de cada transacción</p></li>
+<li><p>card1 - card6 : Información de la tarjeta de pago, como tipo de tarjeta, categoría de tarjeta, banco
+emisor, país, etc.</p></li>
+<li><p>addr: Dirección</p></li>
+<li><p>dist: Distancia</p></li>
+<li><p>P_ and (R_) emaildomain: Dominio de correo electrónico del comprador y del destinatario</p></li>
+<li><p>C1-C14 : Recuento, cuántas direcciones se encuentran asociadas a la tarjeta de pago, etc. El significado
+real está codificado.</p></li>
+<li><p>D1-D15: Intervalo de tiempo, como los días transcurridos entre la transacción anterior, etc.</p></li>
+<li><p>M1-M9: Coinciden, como los nombres en la tarjeta y la dirección, etc.</p></li>
+<li><p>Vxxx: Vesta ofrece una gran variedad de funciones, como la clasificación, el recuento y otras relaciones
+entre entidades.</p></li>
+<li><p>DeviceType: Codificada. Información de identidad o conexión de red (IP, ISP, Proxy, etc) o firma digital</p></li>
+<li><p>DeviceInfo: Codificada. Información de identidad o conexión de red (IP, ISP, Proxy, etc) o firma digital</p></li>
+<li><p>id_12 - id_38: Codificada. Información de identidad o conexión de red (IP, ISP, Proxy, etc) o firma
+digital</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_fraud</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">y_fraud</span><span class="p">,</span> <span class="n">X_fraud</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1891,6 +1966,9 @@ memory usage: 64.1 MB
 </div>
 </div>
 </div>
+<ul class="simple">
+<li><p>Se hace una muestra de las primeros 5 columnas para ver los datos, encontramos variables numericas y dummy.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_fraud</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -2065,6 +2143,9 @@ memory usage: 64.1 MB
 <p>5 rows × 85 columns</p>
 </div></div></div>
 </div>
+<ul class="simple">
+<li><p>Se muestra la información de las columnas del dataset, vemos que hay 84, de las cuales la primera es la variable a predecir, contiene 100.000 valores para cada columna.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ver información sobre las columnas y tipos de variables</span>
@@ -2169,6 +2250,9 @@ memory usage: 64.8 MB
 </div>
 </div>
 </div>
+<ul class="simple">
+<li><p>Aqui se describe el dataset, se observa que la variable a predecir tiene una media 0.025, es decir que estamos con una serie bastante desbalanceada lo cual complica la tarea de clasificación. Se podria explorar utilizando tecnicas de oversampling, sin embargo debido a motivos computacionales se dejara de esta forma. Otra tecnica posible seria realizar un subsampling, eliminado la clase mas común sin embargo se puede perder información util.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_fraud</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -2415,10 +2499,13 @@ memory usage: 64.8 MB
 <p>8 rows × 85 columns</p>
 </div></div></div>
 </div>
+<ul class="simple">
+<li><p>Se toman 5 variables de interes para confirmar su comportamiento y ver su relación con la variable independiente. En este caso: ‘TransactionDT’, ‘TransactionAmt’, ‘card1’, ‘C3’, ‘C9’.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Selección de las 4 variables de interés</span>
-<span class="n">variables_seleccionadas</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;isFraud&#39;</span><span class="p">,</span> <span class="s1">&#39;TransactionDT&#39;</span><span class="p">,</span> <span class="s1">&#39;TransactionAmt&#39;</span><span class="p">,</span> <span class="s1">&#39;card1&#39;</span><span class="p">,</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span><span class="s1">&#39;C9&#39;</span><span class="p">]</span>
+<span class="n">variables_seleccionadas</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;isFraud&#39;</span><span class="p">,</span> <span class="s1">&#39;TransactionDT&#39;</span><span class="p">,</span> <span class="s1">&#39;TransactionAmt&#39;</span><span class="p">,</span> <span class="s1">&#39;card1&#39;</span><span class="p">,</span> <span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="s1">&#39;C9&#39;</span><span class="p">]</span>
 
 <span class="c1"># Crear un subconjunto de datos con las variables seleccionadas</span>
 <span class="n">subset_data</span> <span class="o">=</span> <span class="n">data_fraud</span><span class="p">[</span><span class="n">variables_seleccionadas</span><span class="p">]</span>
@@ -2486,7 +2573,10 @@ Kurtosis:  54.15
 </div>
 </div>
 <ul class="simple">
-<li><p>De los graficos anteriores podemos ver que la clase a predecir “isFraud” se encuentra desbalanceada con muy pocos datos para</p></li>
+<li><p>Vemos que la caracteristica C3 y C9, que corresponde a las direcciones asociadas se concentran en pocas direcciones y se encuentran varios outlayer pero principalmente se concentra en pocas direcciones asociadas.</p></li>
+</ul>
+<ul class="simple">
+<li><p>De los graficos anteriores podemos ver que la clase a predecir “isFraud” se encuentra desbalanceada con muy pocos datos de fraude. Lo cual tiene sentido, ya que para operaciones bancarias que se presente fraude no es tan frecuente.</p></li>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2530,6 +2620,10 @@ Kurtosis:  54.15
 <img alt="_images/f8bebe721a14693d3acb2f2891590fbec0372c507a923286eba5de088098fd40.png" src="_images/f8bebe721a14693d3acb2f2891590fbec0372c507a923286eba5de088098fd40.png" />
 </div>
 </div>
+<ul class="simple">
+<li><p>Tal como observamos en la parte de arriba C3 Y C9 que corresponde al numero de direcciones asociadas, parece tener una correlaccion con la caracteristica a predecir de si es fraude.</p></li>
+<li><p>Por otro lado, en las otras variables no muestran una correlacción clara con que es si es Fraude.</p></li>
+</ul>
 </section>
 <section id="wind-speed">
 <h2>Wind Speed<a class="headerlink" href="#wind-speed" title="Permalink to this heading">#</a></h2>
@@ -2778,6 +2872,7 @@ Kurtosis:  54.15
 <p>87693 rows × 13 columns</p>
 </div></div></div>
 </div>
+<p>Se establecen los nombres que se pondran a las columnas, que son los nombres originales pero reducidos en tamaño para su visualización.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nuevos_nombres</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Hora&#39;</span><span class="p">,</span> <span class="s1">&#39;dir_viento&#39;</span><span class="p">,</span> <span class="s1">&#39;vel_viento&#39;</span><span class="p">,</span> <span class="s1">&#39;Humedad rel. máx&#39;</span><span class="p">,</span><span class="s1">&#39;Humedad rel. mín.&#39;</span><span class="p">,</span><span class="s1">&#39;Temp. máx&#39;</span><span class="p">,</span><span class="s1">&#39;Temp mín.&#39;</span><span class="p">,</span> <span class="s1">&#39;Humedad rel horaria&#39;</span><span class="p">,</span> <span class="s1">&#39;Presión atm&#39;</span><span class="p">,</span> <span class="s1">&#39;Precip&#39;</span><span class="p">,</span> <span class="s1">&#39;Máx ráfaga&#39;</span><span class="p">,</span> <span class="s1">&#39;Presión atm máx&#39;</span><span class="p">,</span> <span class="s1">&#39;Presión atm mín&#39;</span><span class="p">]</span>
@@ -2792,6 +2887,9 @@ Kurtosis:  54.15
 </div>
 </div>
 </div>
+<ul class="simple">
+<li><p>Se muestran los primeros 5 valores para ver una muestra de los datos.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wind_speed</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -2957,6 +3055,9 @@ memory usage: 8.7 MB
 </div>
 </div>
 </div>
+<ul class="simple">
+<li><p>Se muestra la descripción de las columnas. Vemos que tenemos 87692 observaciones de velocidad de viento.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wind_speed</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -3130,6 +3231,9 @@ memory usage: 8.7 MB
 </table>
 </div></div></div>
 </div>
+<ul class="simple">
+<li><p>Vemos que no encuentra ningun valor nulo en la serie, no es necesario realizar imputación de datos.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wind_speed</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -3308,8 +3412,8 @@ Kurtosis:  4.91
 </div>
 </div>
 <ul class="simple">
-<li><p>La Hora que es una variable continua tal como se espera tiene una distribución uniforme con</p></li>
-<li><p>Se observa que la  dirreccion del viento tiene un sesgo hacia la derecha.</p></li>
+<li><p>La Hora que es una variable continua tal como se espera tiene una distribución uniforme.</p></li>
+<li><p>Se observa que la  dirección del viento tiene un sesgo hacia la derecha.</p></li>
 <li><p>Mientras que la velocidad del viento, la variable a predecir tiene un sesgo hacia la izquierda, con varios outlayer en el margen superior. Al igual que la varible rafaga de viento.</p></li>
 <li><p>Tanto la presion atmosferica maxima como minima tienen una distribucion casi simetrica.</p></li>
 <li><p>En la precipitacion nos encontramos con una distribucion con un fuerte sesgo.</p></li>
@@ -3345,6 +3449,9 @@ Kurtosis:  4.91
 </div>
 </div>
 </div>
+<ul class="simple">
+<li><p>Se aplica la funcion VIF para eliminar las variables independientes que tienen un numero mayor a 5 y asi mejorar el modelo y evitar multicolinealidad.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">vif_c</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">columnas</span><span class="p">):</span>
@@ -3462,6 +3569,11 @@ Kurtosis:  4.91
 <img alt="_images/53b538cab29fd8baeeca67efc6a9842611e6c99f1beec998232e372bc4d38427.png" src="_images/53b538cab29fd8baeeca67efc6a9842611e6c99f1beec998232e372bc4d38427.png" />
 </div>
 </div>
+<section id="analisis-bivariado">
+<h3>Analisis bivariado<a class="headerlink" href="#analisis-bivariado" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Se reliza un  scatterplot() y regplot(), para evaluar la relación de las variable a predecir “vel_viento” con las variables independientes que sobrevivieron al filtro de VIF, y entre todas las variables.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">wind_merge</span><span class="p">);</span>
@@ -3490,7 +3602,8 @@ Kurtosis:  4.91
 <img alt="_images/97845eedac9b5919137dc9d67b8a4fc3351972938f4da66e43b9cbdec061c9d1.png" src="_images/97845eedac9b5919137dc9d67b8a4fc3351972938f4da66e43b9cbdec061c9d1.png" />
 </div>
 </div>
-<p>No se puede apreciar una correlacion entre la hora y la direccion del viento con la velocidad del viento. Por otro lado, Se aprecia una fuerte correlaccion entre la rafaga y la velocidad del viento.</p>
+<p>Como se puedo observar no se apreciar una correlacion entre la hora y la direccion del viento con la velocidad del viento. Una relación no muy elevada entre la precip y la vel del viento. Por otro lado, Se aprecia una fuerte correlaccion entre la rafaga y la velocidad del viento.</p>
+</section>
 </section>
 </section>
 <section id="modelo-de-clasificacion">
@@ -4290,7 +4403,7 @@ Pipeline(steps=[(&#39;minmaxscaler&#39;, MinMaxScaler()),
 </div>
 </div>
 <ul class="simple">
-<li><p>Este modelo de Arboles de decisión demuestra un rendimiento superior a los anteriores modelos con todos los indicadores elevados y una curva ROC cercana a 1.</p></li>
+<li><p>Este modelo de Arboles de decisión demuestra un rendimiento superior a los anteriores modelos con todos los indicadores elevados y una curva ROC cercana a 1, vemos que podemos tener un recall alto con un FPR relativamente pequeño.</p></li>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -4476,7 +4589,7 @@ Pipeline(steps=[(&#39;minmaxscaler&#39;, MinMaxScaler()), (&#39;svc&#39;, SVC(C=
 </div>
 </div>
 <ul class="simple">
-<li><p>SVM muestra un peor rendimiento que el modelo anterior, quizas con un “C” mas alto se obtendria un mejor rendimiento pero por motivos computacionales este fue el rango de tuning utilizado. La curva ROC tiene un comportamiento similar a la del modelo k-NN.</p></li>
+<li><p>SVM muestra un peor rendimiento que el modelo anterior, quizas con un “C” mas alto se obtendria un mejor rendimiento pero por motivos computacionales este fue el rango de tuning utilizado. La curva ROC tiene un comportamiento similar, es necesario una mayor Tasa de Falsos Positivos para que aumente el recall, a la del modelo k-NN.</p></li>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -4912,6 +5025,9 @@ Pipeline(steps=[(&#39;minmaxscaler&#39;, MinMaxScaler()),
 </section>
 <section id="id6">
 <h2>K-NN<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>En primer lugar se utilizo el modelo k-NN, tomando desde 3 a 23 vecinos cercanos para obtener cual era el numero optimo.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KNeighborsRegressor</span>
@@ -5032,21 +5148,13 @@ Pipeline(steps=[(&#39;minmaxscaler&#39;, MinMaxScaler()),
 </section>
 <section id="ridge">
 <h2>Ridge<a class="headerlink" href="#ridge" title="Permalink to this heading">#</a></h2>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">Ridge</span>
-</pre></div>
-</div>
-</div>
-</div>
+<ul class="simple">
+<li><p>Para el modelo Ridge al igual que mas adelante con el modelo Lasso, se generaron 100 alphas para probar el mejor ajuste.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">Ridge</span>
 <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
-<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
 
 <span class="n">n_alphas</span> <span class="o">=</span> <span class="mi">100</span>
@@ -5171,6 +5279,9 @@ Pipeline(steps=[(&#39;minmaxscaler&#39;, MinMaxScaler()),
 </section>
 <section id="lasso">
 <h2>Lasso<a class="headerlink" href="#lasso" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Igualmente se aplico el modelo Lasso, el cual puede llegar a reducir las variables hasta 0, si observa que no aportan al modelo. Para este caso se probaron 100 alphas.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">Lasso</span>
@@ -5308,6 +5419,9 @@ Pipeline(steps=[(&#39;minmaxscaler&#39;, MinMaxScaler()),
 </section>
 <section id="id7">
 <h2>XGBoost<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Para xgboost se utilizo su libreria independiente que actualmente es mas rapida, y se definieron algunos parametros de prepoda del arbol como el max_depth,  para encontrar el mejor ajuste.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">xgboost</span> <span class="k">as</span> <span class="nn">xgb</span>
@@ -5456,6 +5570,9 @@ Pipeline(steps=[(&#39;minmaxscaler&#39;, MinMaxScaler()),
 </section>
 <section id="svr">
 <h2>SVR<a class="headerlink" href="#svr" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Para el SVR se probo con dos kernel, el lineal y el rbf, para obtener los mejores ajustes de los hiperparametros.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">SVR</span>
@@ -5604,6 +5721,9 @@ Pipeline(steps=[(&#39;minmaxscaler&#39;, MinMaxScaler()),
 </section>
 <section id="id8">
 <h2>MLP<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Aqui se crea el EarlyStopping, el cual detendra el proceso de aprendizaje de la red neunoral cuando no mejore la perdida, Loss.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tensorflow.keras.callbacks</span> <span class="kn">import</span> <span class="n">EarlyStopping</span>
@@ -5613,6 +5733,9 @@ Pipeline(steps=[(&#39;minmaxscaler&#39;, MinMaxScaler()),
 </div>
 </div>
 </div>
+<ul class="simple">
+<li><p>Finalmente para el metodo de MLP se establecio como 10 folds, y se toma el modelo que de un mejor RMSE, se hizo prueba de diferentes configuraciones de las hidden layer.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
@@ -5924,6 +6047,9 @@ Epoch 65/100
 </div>
 </div>
 </div>
+<ul class="simple">
+<li><p>Finalmente el mejor modelo de los obtenidos es el SVR, probablemente el MLP podria haber obtenido un rendimiento superior si se hubiera probado con mas capas o otro configuración de la red, sin embargo aun asi obtiene uno cercano al 80%.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">regresion_modelos</span>
@@ -6036,15 +6162,6 @@ Epoch 65/100
   
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="intro.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Parcial Final ML</p>
-      </div>
-    </a>
 </div></div>
   
 </div>
@@ -6078,7 +6195,10 @@ Epoch 65/100
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#eda-fraude-con-datos-reducidos">EDA FRAUDE CON DATOS REDUCIDOS</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wind-speed">Wind Speed</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wind-speed">Wind Speed</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-bivariado">Analisis bivariado</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#modelo-de-clasificacion">Modelo de Clasificacion</a><ul class="visible nav section-nav flex-column">
